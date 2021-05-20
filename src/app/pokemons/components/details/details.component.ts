@@ -58,8 +58,16 @@ export class DetailsComponent implements OnInit {
   ngOnInit() {
     this.pokemon$ = this.activatedRoute.params.pipe(
       pluck('id'),
-      tap(pokemonId => this.pokemonId = +pokemonId),
-      switchMap((pokemonId) => this.backendService.getPokemonDetail(pokemonId))
+      tap(pokemonId => this.pokemonId = Number(pokemonId)),
+      switchMap((pokemonId) => {
+          if (pokemonId > 0) {
+            return this.backendService.getPokemonDetail(pokemonId);
+          } else {
+            this.router.navigate(['/pokemons', 1]);
+            return this.backendService.getPokemonDetail(pokemonId);
+          }
+        }
+      )
     );
   }
 
